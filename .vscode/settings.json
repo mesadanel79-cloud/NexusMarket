@@ -1,0 +1,8 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.import.maven.enabled": true,
+    "maven.view": "hierarchical",
+    "files.encoding": "utf8",
+    "files.eol": "\n"
+}

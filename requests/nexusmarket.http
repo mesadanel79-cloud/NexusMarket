@@ -1,0 +1,174 @@
+### NexusMarket - pruebas manuales con la extensión "REST Client" de VS Code (humao.rest-client)
+### Haz clic en "Send Request" sobre cada bloque. Usuarios semilla: contraseña Password123*
+
+@host = http://localhost:8080
+@password = Password123*
+
+### 1. Catálogo público (sin token)
+GET {{host}}/api/v1/catalog/products
+
+### 2. Login comprador
+# @name loginBuyer
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "username": "buyer.laura", "password": "{{password}}" }
+
+###
+@buyerToken = {{loginBuyer.response.body.token}}
+
+### 3. Agregar al carrito (2 laptops)
+POST {{host}}/api/v1/buyer/cart/items
+Authorization: Bearer {{buyerToken}}
+Content-Type: application/json
+
+{ "sku": "LAPTOP-14-8GB", "quantity": 2 }
+
+### 4. Ver carrito
+GET {{host}}/api/v1/buyer/cart
+Authorization: Bearer {{buyerToken}}
+
+### 5. Checkout (reserva inventario -> PENDING_PAYMENT). La dirección debe ser la principal o una adicional.
+# @name checkout
+POST {{host}}/api/v1/buyer/orders
+Authorization: Bearer {{buyerToken}}
+Content-Type: application/json
+
+{ "shippingAddress": "Carrera 70 #44-12 Medellin" }
+
+###
+@orderId = {{checkout.response.body.orderId}}
+
+### 6. Pagar (-> PAID, salida por venta, factura)
+POST {{host}}/api/v1/buyer/orders/{{orderId}}/payment
+Authorization: Bearer {{buyerToken}}
+Content-Type: application/json
+
+{ "paymentMethod": "CREDIT_CARD" }
+
+### 7. Facturas del comprador
+GET {{host}}/api/v1/buyer/invoices
+Authorization: Bearer {{buyerToken}}
+
+### 8. Login operador logístico
+# @name loginOperator
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "username": "operator.nexus", "password": "{{password}}" }
+
+###
+@operatorToken = {{loginOperator.response.body.token}}
+
+### 9. Pedidos listos para despachar
+GET {{host}}/api/v1/logistics/orders/ready-to-ship
+Authorization: Bearer {{operatorToken}}
+
+### 10. Despachar (-> SHIPPED)
+# @name dispatch
+POST {{host}}/api/v1/logistics/orders/{{orderId}}/shipment
+Authorization: Bearer {{operatorToken}}
+Content-Type: application/json
+
+{ "carrier": "Servientrega", "trackingNumber": "SRV-0001" }
+
+###
+@shipmentId = {{dispatch.response.body.shipmentId}}
+
+### 11. Confirmar entrega (-> DELIVERED, pedido finalizado)
+PATCH {{host}}/api/v1/logistics/shipments/{{shipmentId}}/delivery
+Authorization: Bearer {{operatorToken}}
+
+### 12. Solicitar devolución (comprador)
+# @name returnRequest
+POST {{host}}/api/v1/buyer/returns
+Authorization: Bearer {{buyerToken}}
+Content-Type: application/json
+
+{ "orderId": "{{orderId}}", "sku": "LAPTOP-14-8GB", "quantity": 1, "reason": "DEFECTIVE", "comment": "No enciende" }
+
+###
+@returnId = {{returnRequest.response.body.returnId}}
+
+### 13. Login administrador
+# @name loginAdmin
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "username": "admin.nexus", "password": "{{password}}" }
+
+###
+@adminToken = {{loginAdmin.response.body.token}}
+
+### 14. Aprobar devolución (admin)
+PATCH {{host}}/api/v1/admin/returns/{{returnId}}/review
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "decision": "APPROVED" }
+
+### 15. Recibir devolución en bodega (operador) -> queda como inventario dañado (DEFECTIVE)
+PATCH {{host}}/api/v1/logistics/returns/{{returnId}}/reception
+Authorization: Bearer {{operatorToken}}
+
+### 16. Emitir reembolso (admin)
+POST {{host}}/api/v1/admin/returns/{{returnId}}/refund
+Authorization: Bearer {{adminToken}}
+
+### 17. Registrar vendedor + primera bodega (solo admin)
+POST {{host}}/api/v1/admin/sellers
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "identification": "900333444", "name": "Moda Caribe S.A.S.", "email": "ventas@modacaribe.com",
+  "phoneNumber": "6053330000", "address": "Calle 84 #50-20 Barranquilla", "storeName": "Moda Caribe",
+  "username": "seller.modacaribe", "password": "Password123*",
+  "firstWarehouse": { "code": "WH-MOD-01", "name": "Bodega Moda Caribe", "city": "Barranquilla", "address": "Via 40 #70-10" }
+}
+
+### 18. Login vendedor
+# @name loginSeller
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "username": "seller.tecnoandes", "password": "{{password}}" }
+
+###
+@sellerToken = {{loginSeller.response.body.token}}
+
+### 19. Crear producto (vendedor)
+POST {{host}}/api/v1/seller/products
+Authorization: Bearer {{sellerToken}}
+Content-Type: application/json
+
+{
+  "name": "Mouse inalambrico", "description": "Mouse ergonomico", "category": "ELECTRONICS", "productType": "PHYSICAL",
+  "variants": [ { "sku": "MOUSE-BLK", "description": "Negro", "price": 85000, "currency": "COP" } ]
+}
+
+### 20. Ingreso de inventario en su propia bodega (vendedor)
+POST {{host}}/api/v1/seller/inventory/inflows
+Authorization: Bearer {{sellerToken}}
+Content-Type: application/json
+
+{ "warehouseId": "WH-TEC-01", "sku": "MOUSE-BLK", "quantity": 20 }
+
+### 21. Supervisor: reporte administrativo (solo consulta)
+# @name loginSupervisor
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "username": "supervisor.nexus", "password": "{{password}}" }
+
+###
+GET {{host}}/api/v1/supervisor/reports/summary
+Authorization: Bearer {{loginSupervisor.response.body.token}}
+
+### 22. Bitácora (admin)
+GET {{host}}/api/v1/admin/audit-logs
+Authorization: Bearer {{adminToken}}
+
+### 23. Logout (invalida el token)
+POST {{host}}/api/v1/auth/logout
+Authorization: Bearer {{buyerToken}}

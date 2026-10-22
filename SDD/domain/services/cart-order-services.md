@@ -1,0 +1,38 @@
+# Cart and Order Services (OBJ-07, Dominio 7)
+
+## Ciclo de estados del pedido
+```text
+CART ──submitForPayment──> PENDING_PAYMENT ──markPaid──> PAID ──markShipped──> SHIPPED ──markDelivered──> DELIVERED
+  │                              │                         └──(solo digital) markDelivered──────────────────┘
+  └────────────cancel────────────┴──> CANCELLED   (cancelación del comprador o vencimiento del pago)
+```
+DELIVERED y CANCELLED son **finales e inmutables** (`OrderImmutableException`).
+
+## ManageCartService (BUYER)
+* `addItem`: comprador con estado comercial ACTIVE; producto PUBLISHED de vendedor ACTIVE; cantidad > 0 (digitales: 1); para físicos la cantidad acumulada no supera el disponible total en bodegas activas (la reserva real ocurre en el checkout).
+* `updateItem`, `removeItem`. `ConsultCartService.consult` devuelve el carrito (vacío si no existe).
+
+## CheckoutService — `checkout(User, shippingAddress)` (BUYER)
+1. Carrito no vacío; `Order.draftFrom(cart, address)` → estado **CART**, precios congelados; la dirección debe ser la principal o una adicional del comprador.
+2. Persiste y `InventoryAllocationService.reserve` (movimientos `RESERVATION`).
+3. `submitForPayment()` → **PENDING_PAYMENT**; vacía el carrito. Operación `ORDER_CHECKOUT`.
+4. Todo en una transacción: si falta stock en una línea no queda nada reservado.
+
+## PayOrderService — `pay(User, Order, PaymentMethod)` (BUYER dueño)
+1. `markPaid` (PENDING_PAYMENT → PAID). El pago es simulado (no hay pasarela).
+2. `confirmSale` (movimientos `SALE`) y `IssueInvoiceService.issue`.
+3. Pedido solo digital → `markDelivered` inmediato. Operaciones `ORDER_PAYMENT`, `INVOICE_ISSUANCE`, (`ORDER_DELIVERY`).
+
+## CancelOrderService (BUYER dueño)
+Solo CART/PENDING_PAYMENT; libera reservas (`RESERVATION_RELEASE`). Operación `ORDER_CANCELLATION`.
+
+## ExpirePendingOrdersService (proceso del sistema)
+Ejecutado cada minuto por `ExpirePendingOrdersScheduler`. Cancela pedidos en PENDING_PAYMENT con más de `business.payment-expiration-minutes` (60) y libera el stock. Operación `ORDER_EXPIRATION` con `performedBy = null` y motivo en `details`.
+
+## ConsultOrdersService
+| Método | Rol |
+| --- | --- |
+| `consultBuyerOrders`, `consultBuyerOrder` | BUYER (solo los suyos) |
+| `consultSellerSales` | SELLER (pedidos con sus productos) |
+| `consultOrdersReadyToShip` | LOGISTIC_OPERATOR (PAID con productos físicos) |
+| `consultAll`, `consultAnyOrder` | SUPERVISOR, ADMIN (y operador para `consultAnyOrder`) |
