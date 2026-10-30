@@ -1,7 +1,10 @@
 # NexusMarket - verificacion completa (Docker + pruebas unitarias + flujo de negocio por la API)
 # Uso (desde la carpeta raiz del proyecto, en la terminal de VS Code):
 #   powershell -ExecutionPolicy Bypass -File .\scripts\verificar.ps1
+#   Solo el flujo por la API (sin reconstruir Docker ni correr mvn test):
+#   powershell -ExecutionPolicy Bypass -File .\scripts\verificar.ps1 -SoloApi
 # El resultado queda en scripts\resultado-verificacion.txt
+param([switch]$SoloApi)
 
 $ErrorActionPreference = "Continue"
 $root = Split-Path -Parent $PSScriptRoot
@@ -34,7 +37,7 @@ function Api($method, $path, $body, $token) {
         [System.IO.File]::WriteAllText($in, ($body | ConvertTo-Json -Depth 10), (New-Object System.Text.UTF8Encoding($false)))
         $cargs += @("-H", "Content-Type: application/json", "--data-binary", "@$in")
     }
-    $code = & curl.exe @args
+    $code = & curl.exe @cargs
     $text = if (Test-Path $out) { [System.IO.File]::ReadAllText($out) } else { "" }
     $json = $null
     try { if ($text) { $json = $text | ConvertFrom-Json } } catch {}
@@ -46,9 +49,11 @@ function Short($r) { "HTTP $($r.Status) $($r.Body)".Substring(0, [Math]::Min(400
 # ---------------------------------------------------------------- 1. Docker
 Log ""
 Log "== 1. Docker (MySQL, MongoDB y la aplicacion)"
+if (-not $SoloApi) {
 docker info *> $null
 if ($LASTEXITCODE -ne 0) { Log "  [FALLA] Docker Desktop no esta corriendo. Abrelo y espera 'Engine running'."; exit 1 }
 docker compose up -d --build 2>&1 | ForEach-Object { Add-Content -Encoding UTF8 -Path $log -Value "    $_" }
+}
 Log "  Esperando a que la API responda (puede tardar varios minutos la primera vez)..."
 $up = $false
 for ($i = 0; $i -lt 120; $i++) {
@@ -66,11 +71,13 @@ if (-not $up) {
 # ---------------------------------------------------------------- 2. Pruebas unitarias (mvn test en un contenedor aparte)
 Log ""
 Log "== 2. Pruebas unitarias (mvn test)"
+if ($SoloApi) { Log "  (omitidas con -SoloApi)" } else {
 $src = (Join-Path $root "nexusmarket")
 $testOut = docker run --rm -v "${src}:/src:ro" -v nexusmarket_maven_cache:/root/.m2 maven:3.9-eclipse-temurin-17 `
     sh -c "cp -r /src /build && cd /build && rm -rf target && mvn -B test" 2>&1
 $testOut | Select-String -Pattern "Tests run:|FAIL|ERROR\]|BUILD" | ForEach-Object { Add-Content -Encoding UTF8 -Path $log -Value "    $_" }
 Check "mvn test termina en BUILD SUCCESS" (($testOut -join "`n") -match "BUILD SUCCESS") "Ver lineas de arriba"
+}
 
 # ---------------------------------------------------------------- 3. Flujo de negocio por la API
 Log ""
