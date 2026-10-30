@@ -29,16 +29,18 @@ public class ConsultCatalogService {
         this.validateUserAuthorizationService = validateUserAuthorizationService;
     }
 
-    /** Public: published products, optionally filtered by category. */
+    /** Public: published products of active sellers, optionally filtered by category. */
     public List<Product> consultPublished(ProductCategory category) {
-        return productRepositoryPort.findPublished(category);
+        return productRepositoryPort.findPublished(category).stream()
+                .filter(Product::isAvailableForSale)
+                .toList();
     }
 
-    /** Public: a single product, only if it is published. */
+    /** Public: a single product, only if it is published and its seller is active. */
     public Product consultPublishedProduct(Product product) {
         Product stored = productRepositoryPort.findByIdentifier(product)
                 .orElseThrow(() -> new EntityNotFoundException("Product", product.getIdentifier()));
-        if (!stored.isPurchasable()) {
+        if (!stored.isAvailableForSale()) {
             throw new EntityNotFoundException("Product", product.getIdentifier());
         }
         return stored;

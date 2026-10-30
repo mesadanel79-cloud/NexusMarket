@@ -47,9 +47,9 @@ public class Order extends MarketplaceAsset {
         order.buyer = buyer;
         int lineNumber = 1;
         for (CartItem item : cart.getItems()) {
-            if (!item.getProduct().isPurchasable()) {
+            if (!item.getProduct().isAvailableForSale()) {
                 throw new InvalidOrderException("Product " + item.getProduct().getIdentifier()
-                        + " is no longer available for purchase.");
+                        + " is no longer available for purchase (not published or seller not active).");
             }
             OrderLine line = new OrderLine();
             line.setLineNumber(lineNumber++);

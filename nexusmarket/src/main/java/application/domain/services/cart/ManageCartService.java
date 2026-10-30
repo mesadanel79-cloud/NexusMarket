@@ -76,10 +76,11 @@ public class ManageCartService {
     }
 
     private void checkStock(ProductVariant variant, int requested) {
-        int available = inventoryAllocationService.availableQuantity(variant);
+        // Same criterion as the reservation at checkout: one active warehouse must cover the quantity.
+        int available = inventoryAllocationService.availableInSingleWarehouse(variant);
         if (available < requested) {
             throw new InsufficientStockException("Only " + available + " units of SKU " + variant.getSku()
-                    + " are available.");
+                    + " are available in a single warehouse.");
         }
     }
 

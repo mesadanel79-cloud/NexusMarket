@@ -112,6 +112,14 @@ public class Product extends MarketplaceAsset {
         return ProductStatus.PUBLISHED.equals(status);
     }
 
+    /**
+     * Business rule: a product can be seen in the public catalog and bought only when it is
+     * PUBLISHED and its seller is ACTIVE (a suspended seller cannot sell).
+     */
+    public boolean isAvailableForSale() {
+        return isPurchasable() && seller != null && seller.isActive();
+    }
+
     public boolean isPhysical() {
         return ProductType.PHYSICAL.equals(productType);
     }

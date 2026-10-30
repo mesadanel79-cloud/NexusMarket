@@ -9,11 +9,11 @@ CART ──submitForPayment──> PENDING_PAYMENT ──markPaid──> PAID �
 DELIVERED y CANCELLED son **finales e inmutables** (`OrderImmutableException`).
 
 ## ManageCartService (BUYER)
-* `addItem`: comprador con estado comercial ACTIVE; producto PUBLISHED de vendedor ACTIVE; cantidad > 0 (digitales: 1); para físicos la cantidad acumulada no supera el disponible total en bodegas activas (la reserva real ocurre en el checkout).
+* `addItem`: comprador con estado comercial ACTIVE; producto PUBLISHED de vendedor ACTIVE; cantidad > 0 (digitales: 1); para físicos la cantidad acumulada no supera lo que **una sola bodega activa** tiene disponible (`InventoryAllocationService.availableInSingleWarehouse`), que es el mismo criterio de la reserva en el checkout: carrito y checkout nunca se contradicen.
 * `updateItem`, `removeItem`. `ConsultCartService.consult` devuelve el carrito (vacío si no existe).
 
 ## CheckoutService — `checkout(User, shippingAddress)` (BUYER)
-1. Carrito no vacío; `Order.draftFrom(cart, address)` → estado **CART**, precios congelados; la dirección debe ser la principal o una adicional del comprador.
+1. Carrito no vacío; `Order.draftFrom(cart, address)` → estado **CART**, precios congelados; la dirección debe ser la principal o una adicional del comprador. Cada línea se revalida con `Product.isAvailableForSale()` (producto PUBLISHED **y vendedor ACTIVE**): si el vendedor fue suspendido después de agregar al carrito, el pedido se rechaza.
 2. Persiste y `InventoryAllocationService.reserve` (movimientos `RESERVATION`).
 3. `submitForPayment()` → **PENDING_PAYMENT**; vacía el carrito. Operación `ORDER_CHECKOUT`.
 4. Todo en una transacción: si falta stock en una línea no queda nada reservado.

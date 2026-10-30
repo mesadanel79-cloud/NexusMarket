@@ -42,6 +42,18 @@ public class InventoryAllocationService {
     }
 
     /** RESERVATION for every physical line of an order in CART. */
+    /**
+     * Largest quantity that a single active warehouse can supply. Checkout reserves every
+     * order line from one warehouse, so the cart validates against this same criterion.
+     */
+    public int availableInSingleWarehouse(ProductVariant variant) {
+        return inventoryRepositoryPort.findByVariant(variant).stream()
+                .filter(item -> item.getWarehouse() != null && item.getWarehouse().isActive())
+                .mapToInt(InventoryItem::getAvailableQuantity)
+                .max()
+                .orElse(0);
+    }
+
     public void reserve(Order order, User performedBy) {
         for (OrderLine line : order.getLines()) {
             if (!line.isPhysical()) {

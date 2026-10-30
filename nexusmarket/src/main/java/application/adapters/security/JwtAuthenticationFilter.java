@@ -52,10 +52,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         AuthenticatedUserPrincipal principal = new AuthenticatedUserPrincipal(tokenUser);
                         SecurityContextHolder.getContext().setAuthentication(
                                 new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities()));
+                    } else {
+                        log.warn("Rejected token on {} {}: user {} is blocked or the token was revoked (logout, "
+                                + "password or status change).", request.getMethod(), request.getRequestURI(),
+                                stored.getUsername());
                     }
+                } else {
+                    log.warn("Rejected token on {} {}: invalid signature, malformed or expired.",
+                            request.getMethod(), request.getRequestURI());
                 }
             } catch (RuntimeException ex) {
-                log.debug("Rejected token: {}", ex.getMessage());
+                log.warn("Rejected token on {} {}: {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
                 SecurityContextHolder.clearContext();
             }
         }

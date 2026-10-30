@@ -18,7 +18,7 @@
 | `discontinue` | PUBLISHED / SUSPENDED → DISCONTINUED (final) | `PRODUCT_DISCONTINUATION` |
 
 ## ConsultCatalogService
-* `consultPublished(category)` y `consultPublishedProduct` (público): solo productos PUBLISHED.
+* `consultPublished(category)` y `consultPublishedProduct` (público): solo productos disponibles para la venta, `Product.isAvailableForSale()` = PUBLISHED **y vendedor ACTIVE** (un vendedor suspendido no vende).
 * `consultSellerProducts` (SELLER): sus productos en cualquier estado.
 * `consultAll` (SUPERVISOR, ADMIN).
 
