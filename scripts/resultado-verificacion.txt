@@ -1,0 +1,57 @@
+﻿NexusMarket - verificacion 2026-10-29 23:15:13
+
+== 1. Docker (MySQL, MongoDB y la aplicacion)
+  Esperando a que la API responda (puede tardar varios minutos la primera vez)...
+  [OK]    La aplicacion arranco (actuator/health = 200)
+
+== 2. Pruebas unitarias (mvn test)
+  (omitidas con -SoloApi)
+
+== 3. Flujo de negocio por la API
+  [OK]    Catalogo publico sin token (200)
+  [OK]    Login usuario semilla admin.nexus (200 + token)
+  [OK]    Login usuario semilla operator.nexus (200 + token)
+  [OK]    Login usuario semilla supervisor.nexus (200 + token)
+  [OK]    Login usuario semilla seller.tecnoandes (200 + token)
+  [OK]    Login con clave incorrecta es rechazado (401)
+  [OK]    Admin registra vendedor con su primera bodega (2xx)
+  [OK]    Un vendedor NO puede registrar vendedores (403)
+  [OK]    Login del vendedor nuevo (200)
+  [OK]    Vendedor crea producto Laptop 1029231513 (PHYSICAL) (2xx)
+  [OK]    Vendedor crea producto Mouse 1029231513 (PHYSICAL) (2xx)
+  [OK]    Vendedor crea producto eBook 1029231513 (DIGITAL) (2xx)
+  [OK]    Ingreso de inventario laptop: 10 unidades (2xx)
+  [OK]    Ingreso de inventario mouse: 20 unidades (2xx)
+  [OK]    Vendedor NO puede mover inventario de productos ajenos (403/409)
+  [OK]    Registro de comprador (201)
+  [OK]    Documento/correo/usuario repetido es rechazado (409)
+  [OK]    Login del comprador (200 + token)
+  [OK]    Carrito sin token es rechazado (401)
+  [OK]    Agregar LAP-1029231513 x2 al carrito (200)
+  [OK]    Agregar MOU-1029231513 x1 al carrito (200)
+  [OK]    Agregar EBK-1029231513 x1 al carrito (200)
+  [OK]    El carrito tiene 3 productos
+  [OK]    No se puede pedir mas stock del disponible (409)
+  [OK]    Checkout con direccion ajena es rechazado (409/400)
+  [OK]    Checkout reserva inventario -> PENDING_PAYMENT
+  [OK]    Pago -> PAID
+  [OK]    Se genero la factura
+  [OK]    Comprador NO entra a rutas de administrador (403)
+  [OK]    Vendedor NO entra a rutas de comprador (403)
+  [OK]    Supervisor (solo consulta) NO puede crear bodegas (403)
+  [OK]    El pedido aparece listo para despachar
+  [OK]    Despacho del pedido (2xx)
+  [OK]    Confirmacion de entrega (200)
+  [OK]    El pedido quedo DELIVERED (finalizado)
+  [OK]    Un pedido finalizado NO se puede modificar (409)
+  [OK]    Comprador solicita devolucion (2xx)
+  [OK]    Admin aprueba la devolucion (200)
+  [OK]    Operador recibe la devolucion en bodega (200)
+  [OK]    Admin emite el reembolso (2xx)
+  [OK]    Supervisor consulta el reporte administrativo (200)
+  [OK]    La bitacora de auditoria tiene registros
+  [OK]    Logout del comprador (2xx)
+  [OK]    El token deja de servir despues del logout (401)
+
+== RESUMEN: 45 correctas, 0 fallidas
+   Usuario comprador creado: comprador1029231513 / Password123*

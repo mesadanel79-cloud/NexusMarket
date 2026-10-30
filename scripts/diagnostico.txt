@@ -1,0 +1,139 @@
+﻿CONTAINER ID   IMAGE                   COMMAND                  CREATED         STATUS                  PORTS                                             NAMES
+cf5f9a0f8c7d   nexusmarket-nexus-app   "/usr/local/bin/mvn-ÔÇª"   4 minutes ago   Up 4 minutes            0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp       nexus-app
+cfcad7d716ff   mysql:8.0               "docker-entrypoint.sÔÇª"   4 days ago      Up 27 hours (healthy)   0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp       nexus-mysql
+453ab2bd8222   mongo:6.0               "docker-entrypoint.sÔÇª"   4 days ago      Up 27 hours (healthy)   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   nexus-mongo
+----- health
+HTTP/1.1 200 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/vnd.spring-boot.actuator.v3+json
+Transfer-Encoding: chunked
+Date: Fri, 30 Oct 2026 04:13:24 GMT
+
+{"groups":["liveness","readiness"],"status":"UP"}
+----- catalogo
+HTTP/1.1 200 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Fri, 30 Oct 2026 04:13:24 GMT
+
+[{"productId":"PRD-SEED-EBOOK","sellerIdentification":"900111222","storeName":"TecnoAndes Store","name":"Hexagonal Architecture with Java","description":"Digital book (PDF).","category":"BOOKS","productType":"DIGITAL","status":"PUBLISHED","createdAt":"2026-10-25T08:26:04.341165","variants":[{"sku":"EBOOK-HEX-JAVA","description":"PDF edition","price":45000.00,"currency":"COP"}]},{"productId":"PRD-SEED-LAPTOP","sellerIdentification":"900111222","storeName":"TecnoAndes Store","name":"Laptop Andes 14","description":"14 inch laptop for students.","category":"ELECTRONICS","productType":"PHYSICAL","status":"PUBLISHED","createdAt":"2026-10-25T08:26:04.324169","variants":[{"sku":"LAPTOP-14-16GB","description":"16 GB RAM / 512 GB SSD","price":3200000.00,"currency":"COP"},{"sku":"LAPTOP-14-8GB","description":"8 GB RAM / 256 GB SSD","price":2500000.00,"currency":"COP"}]}]
+----- logs
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< cs2:nexusmarket >---------------------------
+[INFO] Building nexusmarket 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.0:run (default-cli) > test-compile @ nexusmarket >>>
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ nexusmarket ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ nexusmarket ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ nexusmarket ---
+[INFO] skip non existing resourceDirectory /workspace/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ nexusmarket ---
+[INFO] Recompiling the module because of added or removed source files.
+[INFO] Compiling 13 source files with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] <<< spring-boot:4.1.0:run (default-cli) < test-compile @ nexusmarket <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.0:run (default-cli) @ nexusmarket ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.0)
+
+2026-10-30T04:09:21.859Z  INFO 90 --- [nexusmarket] [           main] application.NexusMarketApplication       : Starting NexusMarketApplication using Java 17.0.20.1 with PID 90 (/workspace/target/classes started by root in /workspace)
+2026-10-30T04:09:21.868Z  INFO 90 --- [nexusmarket] [           main] application.NexusMarketApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-30T04:09:29.647Z  INFO 90 --- [nexusmarket] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-30T04:09:29.657Z  INFO 90 --- [nexusmarket] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-30T04:09:30.507Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data JPA - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.mongodb.repositories.AuditLogMongoRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2026-10-30T04:09:31.227Z  INFO 90 --- [nexusmarket] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 1538 ms. Found 14 JPA repository interfaces.
+2026-10-30T04:09:31.409Z  INFO 90 --- [nexusmarket] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-30T04:09:31.409Z  INFO 90 --- [nexusmarket] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2026-10-30T04:09:31.890Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataBuyerRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.890Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataCartRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.891Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataInventoryItemRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.891Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataInventoryMovementRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.891Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataInvoiceRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.892Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataOperationRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.892Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataOrderRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.893Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataProductRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.894Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataProductVariantRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.894Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataReturnRequestRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.894Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataSellerRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.895Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataShipmentRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.895Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataUserRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:31.895Z  INFO 90 --- [nexusmarket] [           main] .RepositoryConfigurationExtensionSupport : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface application.adapters.persistence.jpa.repositories.SpringDataWarehouseRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+2026-10-30T04:09:32.184Z  INFO 90 --- [nexusmarket] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 771 ms. Found 1 MongoDB repository interface.
+2026-10-30T04:09:34.394Z  INFO 90 --- [nexusmarket] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-10-30T04:09:34.435Z  INFO 90 --- [nexusmarket] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-30T04:09:34.435Z  INFO 90 --- [nexusmarket] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-10-30T04:09:34.548Z  INFO 90 --- [nexusmarket] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 12550 ms
+2026-10-30T04:09:35.837Z  INFO 90 --- [nexusmarket] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-30T04:09:36.220Z  INFO 90 --- [nexusmarket] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-10-30T04:09:39.666Z  INFO 90 --- [nexusmarket] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-30T04:09:39.829Z  INFO 90 --- [nexusmarket] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-30T04:09:40.493Z  INFO 90 --- [nexusmarket] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1736273c
+2026-10-30T04:09:40.500Z  INFO 90 --- [nexusmarket] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-30T04:09:41.044Z  INFO 90 --- [nexusmarket] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://mysql-db:3306/nexus_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.46
+	Default catalog/schema: nexus_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-30T04:09:50.614Z  INFO 90 --- [nexusmarket] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-30T04:09:51.030Z  INFO 90 --- [nexusmarket] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T04:09:51.387Z  INFO 90 --- [nexusmarket] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-30T04:09:55.016Z  INFO 90 --- [nexusmarket] [-mongo-db:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=mongo-db:27017, type=STANDALONE, cryptd=false, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=17, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=54895668, minRoundTripTimeNanos=0}
+2026-10-30T04:09:55.027Z  INFO 90 --- [nexusmarket] [           main] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|spring-boot|sync", "version": "5.8.0"}, "os": {"type": "Linux", "name": "Linux", "architecture": "amd64", "version": "6.18.54.1-microsoft-standard-WSL2"}, "platform": "Java/Eclipse Adoptium/17.0.20.1+1", "env": {"container": {"runtime": "docker"}}} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@44faf689], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@557ed49a, com.mongodb.Jep395RecordCodecProvider@2d839402, com.mongodb.KotlinCodecProvider@2c2c1790, EnumCodecProvider{}]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[mongo-db:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@6f371390], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverMonitoringMode=AUTO, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=UNSPECIFIED, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null, timeoutMS=null}
+2026-10-30T04:09:57.737Z  WARN 90 --- [nexusmarket] [           main] .s.a.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 0cc40620-a940-4da0-964e-54bce66ce167
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-30T04:09:57.773Z  INFO 90 --- [nexusmarket] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-30T04:10:00.140Z  INFO 90 --- [nexusmarket] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-30T04:10:00.659Z  INFO 90 --- [nexusmarket] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-10-30T04:10:00.707Z  INFO 90 --- [nexusmarket] [           main] application.NexusMarketApplication       : Started NexusMarketApplication in 40.884 seconds (process running for 42.465)
+2026-10-30T04:10:01.264Z  INFO 90 --- [nexusmarket] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-30T04:10:01.264Z  INFO 90 --- [nexusmarket] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-30T04:10:01.267Z  INFO 90 --- [nexusmarket] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-10-30T04:10:02.083Z  INFO 90 --- [nexusmarket] [           main] a.infrastructure.seed.DatabaseSeeder     : Seed data already present: skipping.
