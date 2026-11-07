@@ -353,7 +353,7 @@ Pedido: compromiso comercial formal y proceso central (Dominio 7).
 * `draftFrom(cart, address)`: crea el pedido en **CART** congelando precios; valida comprador habilitado y dirección registrada.
 * `allocateLine(n, warehouse)`, `submitForPayment()` CART→PENDING_PAYMENT (todas las líneas físicas con reserva).
 * `markPaid(method)` PENDING_PAYMENT→PAID, `markShipped()` PAID→SHIPPED, `markDelivered()` SHIPPED→DELIVERED (o PAID→DELIVERED si es solo digital).
-* `cancel()` CART/PENDING_PAYMENT→CANCELLED (cancelación del comprador o vencimiento del pago).
+* `cancel()` CART/PENDING_PAYMENT/PAID→CANCELLED (cancelación del comprador antes del despacho o vencimiento del pago). Si estaba PAID se reembolsa la factura y el stock vuelve a disponible.
 * **Un pedido finalizado (DELIVERED o CANCELLED) no puede modificarse** (`OrderImmutableException`).
 
 ---

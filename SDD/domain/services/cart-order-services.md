@@ -4,7 +4,7 @@
 ```text
 CART ──submitForPayment──> PENDING_PAYMENT ──markPaid──> PAID ──markShipped──> SHIPPED ──markDelivered──> DELIVERED
   │                              │                         └──(solo digital) markDelivered──────────────────┘
-  └────────────cancel────────────┴──> CANCELLED   (cancelación del comprador o vencimiento del pago)
+  └────────────cancel────────────┴──────cancel───────────┴──> CANCELLED   (comprador antes del despacho, o vencimiento del pago)
 ```
 DELIVERED y CANCELLED son **finales e inmutables** (`OrderImmutableException`).
 
@@ -24,7 +24,10 @@ DELIVERED y CANCELLED son **finales e inmutables** (`OrderImmutableException`).
 3. Pedido solo digital → `markDelivered` inmediato. Operaciones `ORDER_PAYMENT`, `INVOICE_ISSUANCE`, (`ORDER_DELIVERY`).
 
 ## CancelOrderService (BUYER dueño)
-Solo CART/PENDING_PAYMENT; libera reservas (`RESERVATION_RELEASE`). Operación `ORDER_CANCELLATION`.
+Permitido en CART, PENDING_PAYMENT y **PAID** (pagado pero aún no despachado). Operación `ORDER_CANCELLATION`.
+* **PENDING_PAYMENT:** no hubo dinero; libera las reservas (`RESERVATION_RELEASE`).
+* **PAID:** las unidades nunca salieron de la bodega, así que `InventoryAllocationService.reverseSale` las devuelve a disponible (movimiento `RETURN`), y `Invoice.refundRemaining()` reembolsa el total de la factura (estado **REFUNDED**). Operación adicional `REFUND_ISSUANCE`.
+* **SHIPPED / DELIVERED / CANCELLED:** rechazado (409). Después de la entrega el camino es la devolución (`RequestReturnService`).
 
 ## ExpirePendingOrdersService (proceso del sistema)
 Ejecutado cada minuto por `ExpirePendingOrdersScheduler`. Cancela pedidos en PENDING_PAYMENT con más de `business.payment-expiration-minutes` (60) y libera el stock. Operación `ORDER_EXPIRATION` con `performedBy = null` y motivo en `details`.

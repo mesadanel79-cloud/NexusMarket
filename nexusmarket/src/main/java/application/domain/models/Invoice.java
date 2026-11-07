@@ -47,6 +47,22 @@ public class Invoice extends MarketplaceAsset {
     /**
      * Registers a refund against the invoice. The accumulated refunds can never exceed the total.
      */
+    /**
+     * Refunds everything that has not been refunded yet (used when a paid order is cancelled
+     * before shipping). Returns the refunded amount; the invoice ends as REFUNDED.
+     */
+    public Money refundRemaining() {
+        Money alreadyRefunded = refundedAmount == null ? Money.zero(total.getCurrency()) : refundedAmount;
+        if (refundedAmount == null) {
+            refundedAmount = alreadyRefunded;
+        }
+        Money remaining = total.subtract(alreadyRefunded);
+        if (remaining.isPositive()) {
+            registerRefund(remaining);
+        }
+        return remaining;
+    }
+
     public void registerRefund(Money amount) {
         if (amount == null || !amount.isPositive()) {
             throw new InvalidInvoiceException("Refund amount must be greater than zero.");

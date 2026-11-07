@@ -133,9 +133,15 @@ public class Order extends MarketplaceAsset {
     }
 
     /** CART | PENDING_PAYMENT -> CANCELLED. */
+    /**
+     * Cancels the order. Allowed while it is in CART, PENDING_PAYMENT or PAID (paid but not
+     * shipped yet). Once SHIPPED the goods left the warehouse: the buyer must wait for the
+     * delivery and request a return. DELIVERED and CANCELLED are final.
+     */
     public void cancel() {
         ensureMutable();
-        if (!OrderStatus.CART.equals(status) && !OrderStatus.PENDING_PAYMENT.equals(status)) {
+        if (!OrderStatus.CART.equals(status) && !OrderStatus.PENDING_PAYMENT.equals(status)
+                && !OrderStatus.PAID.equals(status)) {
             throw new InvalidStatusTransitionException("Order", code(), OrderStatus.CANCELLED.getCode());
         }
         this.status = OrderStatus.CANCELLED;

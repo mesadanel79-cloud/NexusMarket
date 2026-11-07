@@ -99,6 +99,22 @@ public class InventoryAllocationService {
     }
 
     /** RETURN: puts returned units back into the warehouse they were sold from (damaged if DEFECTIVE). */
+    /**
+     * Reverses the SALE of a paid order cancelled before shipping: the units never left the
+     * warehouse, so they go back to available stock (movement RETURN).
+     */
+    public void reverseSale(Order order, User performedBy, String note) {
+        for (OrderLine line : order.getLines()) {
+            if (!line.isPhysical() || line.getWarehouse() == null) {
+                continue;
+            }
+            InventoryItem item = load(line);
+            item.registerReturn(line.getQuantity(), false);
+            inventoryRepositoryPort.update(item);
+            record(item, MovementType.RETURN, line.getQuantity(), performedBy, order, note);
+        }
+    }
+
     public InventoryItem restock(ReturnRequest returnRequest, User performedBy) {
         OrderLine line = returnRequest.getOrderLine();
         InventoryItem item = load(line);

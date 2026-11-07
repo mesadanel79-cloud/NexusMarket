@@ -97,7 +97,7 @@ public final class ServiceHarness {
     public final CheckoutService checkout = new CheckoutService(carts, orders, ownership, allocation, audit);
     public final IssueInvoiceService issueInvoice = new IssueInvoiceService(invoices, configuration, audit);
     public final PayOrderService pay = new PayOrderService(orders, ownership, allocation, issueInvoice, audit);
-    public final CancelOrderService cancel = new CancelOrderService(orders, ownership, allocation, audit);
+    public final CancelOrderService cancel = new CancelOrderService(orders, invoices, ownership, allocation, audit);
     public final ExpirePendingOrdersService expire =
             new ExpirePendingOrdersService(orders, configuration, allocation, audit);
     public final ConsultOrdersService consultOrders = new ConsultOrdersService(orders, ownership, authorization);
